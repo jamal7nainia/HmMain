@@ -385,9 +385,7 @@ img{display:block;}
 
 /* ============ SCREENSHOTS ============ */
 .screenshots-section{
-  background:
-    radial-gradient(ellipse 700px 400px at 50% 0%, rgba(54,114,255,0.08), transparent 65%),
-    var(--void);
+  background: var(--void);
   padding:100px 0 120px;
 }
 .screens-row{
