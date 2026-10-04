@@ -26,7 +26,7 @@ body{
 }
 
 a{text-decoration:none; color:inherit;}
-h1,h2,h3{font-family:'Tajawal', sans-serif;}
+h1,h2,h3{font-family:'Cairo', sans-serif;}
 img{display:block;}
 
 .wrap{
@@ -63,13 +63,13 @@ img{display:block;}
   display:flex; align-items:center; justify-content:center;
 }
 .brand-mark span{
-  font-family:'Tajawal', sans-serif;
+  font-family:'Cairo', sans-serif;
   font-weight:900;
   font-size:16px;
   color:#fff;
 }
 .brand-name{
-  font-family:'Tajawal', sans-serif;
+  font-family:'Cairo', sans-serif;
   font-weight:800;
   font-size:16.5px;
 }
@@ -227,13 +227,13 @@ img{display:block;}
   display:flex; align-items:center; justify-content:center;
 }
 .hero-mark span{
-  font-family:'Tajawal', sans-serif;
+  font-family:'Cairo', sans-serif;
   font-weight:900;
   font-size:22px;
   color:#fff;
 }
 .hero-wordmark{
-  font-family:'Tajawal', sans-serif;
+  font-family:'Cairo', sans-serif;
   font-weight:800;
   font-size:30px;
 }
@@ -371,7 +371,7 @@ img{display:block;}
 .feature-icon svg{width:21px; height:21px; stroke:var(--blue-bright);}
 .feature-title{
   position:relative;
-  font-family:'Tajawal', sans-serif;
+  font-family:'Cairo', sans-serif;
   font-weight:700;
   font-size:15.5px;
   margin-bottom:9px;
