@@ -469,6 +469,130 @@ footer .wrap{
   background:var(--surface2);
 }
 .footer-social svg{width:15px; height:15px;}
+
+/* Interactive Expanding Email Button */
+.footer-email-btn{
+  height:38px;
+  width:38px;
+  max-width:38px;
+  border-radius:11px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  display:inline-flex;
+  align-items:center;
+  color:var(--text-dim);
+  cursor:pointer;
+  overflow:hidden;
+  white-space:nowrap;
+  transition:max-width .35s cubic-bezier(0.16, 1, 0.3, 1), background .2s ease, border-color .2s ease, color .2s ease, box-shadow .25s ease, padding .35s ease;
+  user-select:none;
+  position:relative;
+  padding:0;
+  box-sizing:border-box;
+}
+
+.footer-email-btn:hover{
+  color:var(--text);
+  border-color:rgba(110,161,255,0.4);
+  background:var(--surface2);
+}
+
+.footer-email-btn .email-icon{
+  width:38px;
+  height:38px;
+  min-width:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.footer-email-btn .email-icon svg{
+  width:15px;
+  height:15px;
+}
+
+.footer-email-btn .email-address{
+  font-size:12.5px;
+  font-family:'JetBrains Mono', monospace;
+  font-weight:500;
+  direction:ltr;
+  color:var(--text);
+  opacity:0;
+  transform:translateX(-10px);
+  transition:opacity .2s ease, transform .25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events:none;
+  padding:0 4px;
+  line-height:1;
+}
+
+.footer-email-btn .email-copy-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:26px;
+  height:26px;
+  min-width:26px;
+  border-radius:7px;
+  background:rgba(255,255,255,0.06);
+  color:var(--text-dim);
+  margin-left:6px;
+  opacity:0;
+  transform:scale(0.75);
+  transition:opacity .2s ease, transform .2s ease, background .2s ease, color .2s ease;
+  flex-shrink:0;
+  cursor:pointer;
+}
+
+.footer-email-btn .email-copy-badge:hover{
+  background:rgba(110,161,255,0.2);
+  color:var(--blue-bright);
+}
+
+.footer-email-btn .email-copy-badge svg{
+  width:13px;
+  height:13px;
+}
+
+.footer-email-btn .check-svg{
+  display:none;
+  color:#4ade80;
+}
+
+/* Expanded state */
+.footer-email-btn.is-expanded{
+  max-width:335px;
+  width:auto;
+  background:var(--surface2);
+  border-color:rgba(110,161,255,0.45);
+  box-shadow:0 4px 18px rgba(0,0,0,0.35);
+  color:var(--text);
+  padding-left:6px;
+}
+
+.footer-email-btn.is-expanded .email-address{
+  opacity:1;
+  transform:translateX(0);
+  pointer-events:auto;
+  user-select:all;
+}
+
+.footer-email-btn.is-expanded .email-copy-badge{
+  opacity:1;
+  transform:scale(1);
+  pointer-events:auto;
+}
+
+/* Copied feedback */
+.footer-email-btn.copied .copy-svg{
+  display:none;
+}
+.footer-email-btn.copied .check-svg{
+  display:block;
+}
+.footer-email-btn.copied .email-copy-badge{
+  background:rgba(74,222,128,0.15);
+  color:#4ade80;
+}
 .footer-links{
   display:flex;
   gap:24px;
