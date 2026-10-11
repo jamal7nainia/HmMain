@@ -748,3 +748,116 @@ footer .wrap{
 @media (prefers-reduced-motion: reduce){
   .poster-track{animation:none;}
 }
+
+/* ============ ADSTERRA ADS STYLING ============ */
+.ad-section {
+  padding: 30px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 5;
+}
+
+.ad-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}
+
+.ad-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  max-width: 100%;
+  overflow: hidden;
+  transition: border-color .2s ease;
+}
+
+.ad-card:hover {
+  border-color: rgba(110, 161, 255, 0.22);
+}
+
+.ad-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-faint);
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+  user-select: none;
+  display: inline-block;
+}
+
+.ad-desktop-728 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90px;
+  width: 728px;
+  max-width: 100%;
+}
+
+.ad-mobile-320 {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+  width: 320px;
+  max-width: 100%;
+}
+
+.ad-rect-300 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+  width: 300px;
+  max-width: 100%;
+}
+
+.ad-native-container {
+  width: 100%;
+  max-width: 1000px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.ad-native-container #container-30793abd793d5401ce14d97b8ce4c953 {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .ad-desktop-728 {
+    display: none !important;
+  }
+  .ad-mobile-320 {
+    display: flex !important;
+  }
+  .ad-section {
+    padding: 20px 0;
+  }
+  .ad-card {
+    padding: 10px 8px;
+    border-radius: 14px;
+  }
+  .ad-native-container {
+    padding: 16px 12px;
+    border-radius: 14px;
+  }
+}
