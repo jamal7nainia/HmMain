@@ -256,8 +256,8 @@
   </div>
 </section>
 
-<!-- AD BANNER (728x90 Desktop / 320x50 Mobile) -->
-<div class="ad-section">
+<!-- AD BANNER (728x90 Desktop Only) -->
+<div class="ad-section ad-desktop-only">
   <div class="wrap">
     <div class="ad-wrapper">
       <div class="ad-card">
@@ -273,18 +273,6 @@
             };
           </script>
           <script src="https://bellnewyork.org/22/c02042709fec4b4bd50f6d0d52d3012b"></script>
-        </div>
-        <div class="ad-mobile-320">
-          <script>
-            atOptions = {
-              'key' : '7792faa235cfc4a2d73db15462c3e85e',
-              'format' : 'iframe',
-              'height' : 50,
-              'width' : 320,
-              'params' : {}
-            };
-          </script>
-          <script src="https://bellnewyork.org/22/7792faa235cfc4a2d73db15462c3e85e"></script>
         </div>
       </div>
     </div>
@@ -487,6 +475,23 @@
     </div>
   </div>
 </footer>
+
+<!-- STICKY BOTTOM AD BANNER (Mobile Only) -->
+<div class="ad-sticky-mobile" id="stickyAdMobile">
+  <button class="ad-sticky-close" onclick="document.getElementById('stickyAdMobile').style.display='none'" aria-label="إغلاق الإعلان">✕</button>
+  <div class="ad-mobile-320">
+    <script>
+      atOptions = {
+        'key' : '7792faa235cfc4a2d73db15462c3e85e',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+    <script src="https://bellnewyork.org/22/7792faa235cfc4a2d73db15462c3e85e"></script>
+  </div>
+</div>
 
 </body>
 </html>
