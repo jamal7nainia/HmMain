@@ -3,50 +3,1025 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hikari Manga — شحن نقاط هيكاري</title>
     <link rel="icon" type="image/png" href="app.png">
-    <title>Hikari Manga Premium</title>
-    <!--Google Font-->
+    
+    <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=Cairo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            font-family: 'Cairo', sans-serif;
+        /* ==========================================================================
+           Hikari Manga Server Design Language:
+           Quiet, monochrome dark theme. One neutral gray family, near-white accent.
+           Color reserved for semantics only.
+           ========================================================================== */
+        :root {
+            --bg-main: #0B0B0D;
+            --bg-sidebar: #101013;
+            --bg-card: #151518;
+            --bg-card-hover: #19191D;
+            --bg-input: #0F0F12;
+            --bg-hover: #1D1D21;
+            --accent: #ECEDEF;
+            --accent-hover: #FFFFFF;
+            --text-main: #EDEDEF;
+            --text-muted: #8A8A93;
+            --border: #26262B;
+            --border-light: #1D1D21;
+            --border-strong: #38383F;
+            --danger: #E5484D;
+            --danger-hover: #D9393F;
+            --success: #5FB98B;
+            --success-soft: #7FC8A5;
+            --success-bg: rgba(95, 185, 139, 0.1);
+            --danger-soft: #F08A8E;
+            --gold: #F5A623;
+            --gold-soft: #FFD166;
+            --gold-bg: rgba(245, 166, 35, 0.12);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        h1{
-            margin-top: 10%;
-            text-align: center;
-            font-size: 18px;
-            color: #fbe202;
-            font-weight: bold;
-        }
-        h3{
-            text-align: center;
-        }
-        .feature{
+
+        body {
+            font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+        }
+
+        ::selection {
+            background: rgba(236, 237, 239, 0.22);
+            color: var(--accent-hover);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-strong);
+        }
+
+        /* SVG Icon Base */
+        .icon {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1020px;
+            margin: 0 auto;
+            padding: 32px 24px 60px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* ==========================================================================
+           User Profile Section
+           ========================================================================== */
+        .profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            margin-top: 3px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--border-strong), var(--accent), var(--border-strong), transparent);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .avatar-img {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            border: 2px solid var(--border-strong);
+            padding: 3px;
+            background: var(--bg-input);
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            transition: var(--transition);
+        }
+
+        .avatar-wrapper:hover .avatar-img {
+            border-color: var(--accent);
+            transform: scale(1.03);
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--success);
+            border: 3px solid var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-name {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--success);
+            display: inline-block;
+        }
+
+        /* Points Balance Box */
+        .balance-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 22px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            transition: var(--transition);
+        }
+
+        .balance-box:hover {
+            border-color: var(--border-strong);
+            background: var(--bg-hover);
+        }
+
+        .balance-label {
+            font-size: 0.86rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .balance-amount {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--gold-soft);
+        }
+
+        /* ==========================================================================
+           Products Section (Hikari Points Packages)
+           ========================================================================== */
+        .section-header {
+            margin-bottom: 24px;
+            text-align: right;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 18px;
+            margin-bottom: 48px;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: var(--transition);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-strong);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Featured / Popular Card */
+        .product-card.featured {
+            border-color: var(--border-strong);
+            background: linear-gradient(180deg, #18181D 0%, #151518 100%);
+        }
+
+        .product-card.featured::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .product-top {
+            margin-bottom: 20px;
+        }
+
+        .package-tier {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .points-wrapper {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .points-number {
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+
+        .points-unit {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--gold-soft);
+        }
+
+        .package-perks {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 22px;
+        }
+
+        .package-perks.has-bonus {
+            color: var(--success-soft);
+            font-weight: 600;
+        }
+
+        /* Card Bottom / Price & Action */
+        .product-bottom {
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .price-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-value {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .price-currency {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Buttons (exact from admin-style.css) */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            outline: none;
+            background: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0B0B0D;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 14px rgba(236, 237, 239, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-strong);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* ==========================================================================
+           Trust & Features Section
+           ========================================================================== */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .trust-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .trust-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .trust-info h4 {
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .trust-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           Checkout Modal (Matching admin modal style)
+           ========================================================================== */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+            animation: fadeIn 0.18s ease;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius);
+            width: 440px;
+            max-width: 100%;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalScale {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            padding: 4px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--text-main);
+            background: var(--bg-hover);
+        }
+
+        .modal-body {
+            padding: 22px;
+        }
+
+        .checkout-summary {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            margin-bottom: 10px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-light);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+        }
+
+        .summary-value {
+            color: var(--text-main);
+        }
+
+        .payment-methods-title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-btn {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            color: var(--text-main);
+            font-size: 0.86rem;
+            font-weight: 600;
+        }
+
+        .payment-btn:hover, .payment-btn.active {
+            border-color: var(--accent);
+            background: var(--bg-hover);
+        }
+
+        .payment-btn.active {
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .modal-footer {
+            padding: 14px 22px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            background: var(--bg-input);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-strong);
+            color: var(--text-main);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-success-icon {
+            color: var(--success);
+        }
+
+        /* Footer */
+        .site-footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 24px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            background: var(--bg-main);
+            margin-top: auto;
+        }
+
+        .site-footer a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin: 0 8px;
+            transition: var(--transition);
+        }
+
+        .site-footer a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .main-container {
+                padding: 24px 16px 40px;
+            }
+            .profile-card {
+                padding: 24px 16px;
+            }
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <section>
-        <h1>ستتوفر عضوية هيكاري قريبا!</h1>
-        <br>
-        <div>
-            <h3>ستمنحك العضوية ما يلي:</h3>
-            <div class="feature">
-            <ul>
-                <li>تصفح التطبيق بكل سلاسة وأريحية</li>
-                <li>تصفح التطبيق بدون اعلانات</li>
-            </ul>
+
+    <!-- Main Content -->
+    <main class="main-container">
+
+        <!-- 1. Profile Section (صورة بروفايل واسفلها اسم ما) -->
+        <section class="profile-card">
+            <div class="avatar-wrapper">
+                <!-- Profile Avatar Image -->
+                <svg class="avatar-img" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="40" fill="#1D1D21"/>
+                    <circle cx="40" cy="30" r="14" fill="#EDEDEF"/>
+                    <path d="M16 66C16 52.7452 26.7452 42 40 42C53.2548 42 64 52.7452 64 66" fill="#EDEDEF"/>
+                </svg>
+                <div class="avatar-badge" title="حساب موثّق">
+                    <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; stroke: #0B0B0D; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+            </div>
+
+            <!-- Profile Name -->
+            <h2 class="user-name" id="user-display-name">مستخدم هيكاري</h2>
+
+            <!-- Profile Meta -->
+            <div class="user-meta">
+                <span class="meta-pill">
+                    <span class="status-dot"></span>
+                    <span>حساب نشط</span>
+                </span>
+                <span class="meta-pill" id="user-id-tag">المعرف: #409218</span>
+            </div>
+
+            <!-- Current Points Balance -->
+            <div class="balance-box">
+                <span class="balance-label">رصيد النقاط الحالي:</span>
+                <div class="balance-amount">
+                    <span id="current-points-count">0</span>
+                    <span style="font-size: 0.86rem; color: var(--text-muted); font-weight: 600;">نقطة</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Products Section (قائمة منتوجات نقاط هيكاري بالدولار) -->
+        <section>
+            <div class="section-header">
+                <h3 class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24" style="color: var(--gold-soft);"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-7 0c0 4 7 2 7 6a3.5 3.5 0 0 1-7 0"></path></svg>
+                    <span>باقات نقاط هيكاري</span>
+                </h3>
+                <p class="section-subtitle">اختر الباقة المناسبة لشحن رصيد حسابك فورا واستخدامها في التطبيق</p>
+            </div>
+
+            <!-- Packages Grid (Populated dynamically from JSON in JS) -->
+            <div class="products-grid" id="products-grid"></div>
+        </section>
+
+        <!-- 3. Trust & Guarantees -->
+        <section class="trust-grid">
+            <div class="trust-card">
+                <div class="trust-icon-box">
+                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <div class="trust-info">
+                    <h4>دفع آمن ومشفّر 100%</h4>
+                    <p>معاملاتك المالية مشفرة عبر أحدث بوابات الدفع العالمية المعتمدة.</p>
+                </div>
+            </div>
+
+            <div class="trust-card">
+                <div class="trust-icon-box">
+                    <svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                </div>
+                <div class="trust-info">
+                    <h4>تفعيل فوري للنقاط</h4>
+                    <p>تتم إضافة النقاط مباشرة إلى محفظة حسابك بمجرد اكتمال العملية.</p>
+                </div>
+            </div>
+
+            <div class="trust-card">
+                <div class="trust-icon-box">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="trust-info">
+                    <h4>دعم فني سريع</h4>
+                    <p>فريقنا جاهز للمساعدة وحل أي استفسار يتعلق برصيد حسابك على مدار الساعة.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Checkout Modal -->
+    <div class="modal-backdrop" id="checkout-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-package-title">تأكيد عملية الشراء</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="checkout-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">الباقة المختارة:</span>
+                        <span class="summary-value" id="summary-name">الباقة الذهبية</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">النقاط الإجمالية:</span>
+                        <span class="summary-value" id="summary-points" style="color: var(--gold-soft); font-weight: 700;">850 نقطة</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">المبلغ المطلوب:</span>
+                        <span class="summary-value" id="summary-price">$4.99 USD</span>
+                    </div>
+                </div>
+
+                <label class="payment-methods-title">اختر وسيلة الدفع المناسبة:</label>
+                <div class="payment-options">
+                    <button class="payment-btn active" onclick="setPaymentMethod(this)">
+                        <svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                        <span>بطاقة بنكية</span>
+                    </button>
+                    <button class="payment-btn" onclick="setPaymentMethod(this)">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-2h-2v2zm0-4h2V7h-2v6z"></path></svg>
+                        <span>Google Pay</span>
+                    </button>
+                    <button class="payment-btn" onclick="setPaymentMethod(this)">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 20.94c1.88-1.55 3-3.66 3-6.02 0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.36 1.12 4.47 3 6.02"></path></svg>
+                        <span>Apple Pay</span>
+                    </button>
+                    <button class="payment-btn" onclick="setPaymentMethod(this)">
+                        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path></svg>
+                        <span>PayPal</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+                <button class="btn btn-primary" id="confirm-pay-btn" onclick="processCheckout()">متابعة الدفع</button>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast">
+        <svg class="icon toast-success-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="toast-text">تمت العملية بنجاح</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>© 2026 Hikari Manga. جميع الحقوق محفوظة.</p>
+        <p style="margin-top: 6px;">
+            <a href="terms.html">الشروط والأحكام</a> · 
+            <a href="privacy-policy.html">سياسة الخصوصية</a> · 
+            <a href="index.html">الصفحة الرئيسية</a>
+        </p>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        // Purchase Packages Data (JSON format)
+        const packagesData = [
+            {
+                id: "starter",
+                tier: "باقة البداية",
+                points: 1200,
+                bonus: 0,
+                price: 1,
+                description: "مثالية لتجربة القراءة والتصفح",
+                featured: true
+            },
+            {
+                id: "reader",
+                tier: "باقة القارئ",
+                points: 3000,
+                bonus: 30,
+                price: 2.49,
+                description: "تشمل 30 نقطة إضافية هدية",
+                featured: true
+            },
+            {
+                id: "gold",
+                tier: "الباقة الذهبية",
+                points: 5000,
+                bonus: 150,
+                price: 4.99,
+                description: "تشمل 150 نقطة إضافية هدية",
+                featured: true
+            },
+        ];
+
+        let currentSelectedPackage = null;
+
+        // Render Packages dynamically from JSON into DOM
+        function renderPackages() {
+            const grid = document.getElementById('products-grid');
+            if (!grid) return;
+
+            grid.innerHTML = packagesData.map(pkg => {
+                const totalPoints = pkg.points + pkg.bonus;
+                const totalPointsFormatted = totalPoints.toLocaleString('en-US');
+
+                const perksHtml = pkg.bonus > 0
+                    ? `<div class="package-perks has-bonus">
+                         <svg class="icon" viewBox="0 0 24 24" style="width: 14px; height: 14px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                         <span>${pkg.description}</span>
+                       </div>`
+                    : `<div class="package-perks">
+                         <span>${pkg.description}</span>
+                       </div>`;
+
+                const btnClass = pkg.featured ? 'btn-primary' : 'btn-secondary';
+                const btnText = pkg.featured ? 'شراء الآن' : 'شراء';
+                const cardClass = pkg.featured ? 'product-card featured' : 'product-card';
+
+                return `
+                    <div class="${cardClass}" onclick="selectPackageById('${pkg.id}')">
+                        <div class="product-top">
+                            <div class="package-tier">${pkg.tier}</div>
+                            <div class="points-wrapper">
+                                <span class="points-number">${totalPointsFormatted}</span>
+                                <span class="points-unit">نقطة</span>
+                            </div>
+                            ${perksHtml}
+                        </div>
+                        <div class="product-bottom">
+                            <div class="price-box">
+                                <span class="price-value">$${pkg.price.toFixed(2)}</span>
+                                <span class="price-currency">USD / تدفع لمرة واحدة</span>
+                            </div>
+                            <button class="btn ${btnClass}" type="button">${btnText}</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Auto-detect user or guest from URL parameters if available
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPackages();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const userParam = urlParams.get('user') || urlParams.get('name');
+            const idParam = urlParams.get('id');
+            const pointsParam = urlParams.get('points');
+
+            if (userParam) {
+                document.getElementById('user-display-name').textContent = decodeURIComponent(userParam);
+            }
+            if (idParam) {
+                document.getElementById('user-id-tag').textContent = 'المعرف: #' + idParam;
+            }
+            if (pointsParam) {
+                document.getElementById('current-points-count').textContent = pointsParam;
+            }
+        });
+
+        function selectPackageById(pkgId) {
+            const pkg = packagesData.find(p => p.id === pkgId);
+            if (!pkg) return;
+
+            const totalPoints = pkg.points + pkg.bonus;
+            currentSelectedPackage = {
+                title: pkg.tier,
+                points: pkg.points,
+                bonus: pkg.bonus,
+                totalPoints: totalPoints,
+                price: pkg.price.toFixed(2)
+            };
+
+            document.getElementById('modal-package-title').textContent = 'شحن ' + pkg.tier;
+            document.getElementById('summary-name').textContent = pkg.tier;
+            document.getElementById('summary-points').textContent = totalPoints.toLocaleString('en-US') + ' نقطة';
+            document.getElementById('summary-price').textContent = '$' + pkg.price.toFixed(2) + ' USD';
+            
+            document.getElementById('checkout-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('checkout-modal').style.display = 'none';
+        }
+
+        // Close on clicking backdrop
+        window.onclick = function(event) {
+            const modal = document.getElementById('checkout-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+
+        function setPaymentMethod(element) {
+            document.querySelectorAll('.payment-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function processCheckout() {
+            if (!currentSelectedPackage) return;
+            
+            const btn = document.getElementById('confirm-pay-btn');
+            const oldText = btn.textContent;
+            btn.textContent = 'جاري المعالجة...';
+            btn.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                btn.textContent = oldText;
+                btn.style.pointerEvents = 'auto';
+                closeModal();
+                showToast(`تم اختيار ${currentSelectedPackage.title} ($${currentSelectedPackage.price}) بنجاح!`);
+            }, 800);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+    </script>
 </body>
 </html>
