@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>Hikari Manga — شحن نقاط هيكاري</title>
     <link rel="icon" type="image/png" href="app.png">
     
@@ -1137,6 +1138,11 @@
 
                 // Reveal loaded content
                 finishLoading();
+
+                // Sanitize URL: Remove sensitive tokens/IDs from address bar and browser history
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
 
             } catch (err) {
                 console.warn('[premium.html] Verification failed or network error:', err);
