@@ -208,36 +208,6 @@
             color: var(--text-main);
             margin-bottom: 4px;
         }
-
-        .user-meta {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            font-size: 0.84rem;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .meta-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--success);
-            display: inline-block;
-        }
-
         /* Points Balance Box */
         .balance-box {
             display: inline-flex;
@@ -719,21 +689,40 @@
         /* ==========================================================================
            Shimmer Skeleton Loading Effect
            ========================================================================== */
-        @keyframes shimmerPulse {
+        @keyframes shimmerSlide {
             0% {
-                background-position: 200% 0;
+                transform: translateX(-100%);
             }
             100% {
-                background-position: -200% 0;
+                transform: translateX(100%);
             }
         }
 
         .skeleton-shimmer {
-            background: linear-gradient(90deg, #151518 0%, #26262B 50%, #151518 100%) !important;
-            background-size: 200% 100% !important;
-            animation: shimmerPulse 1.6s ease-in-out infinite !important;
+            background-color: #18181D !important;
+            position: relative !important;
+            overflow: hidden !important;
             border-radius: var(--radius-sm);
             display: inline-block;
+        }
+
+        .skeleton-shimmer::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            transform: translateX(-100%);
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.06) 25%,
+                rgba(255, 255, 255, 0.18) 50%,
+                rgba(255, 255, 255, 0.06) 75%,
+                rgba(255, 255, 255, 0) 100%
+            ) !important;
+            animation: shimmerSlide 1.4s ease-in-out infinite !important;
         }
 
         .skeleton-card {
@@ -789,8 +778,7 @@
             <!-- Shimmer Skeleton Loading State -->
             <div id="profile-skeleton" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                 <div class="skeleton-shimmer" style="width: 92px; height: 92px; border-radius: 50%; margin-bottom: 16px;"></div>
-                <div class="skeleton-shimmer" style="width: 160px; height: 26px; border-radius: 6px; margin-bottom: 12px;"></div>
-                <div class="skeleton-shimmer" style="width: 190px; height: 22px; border-radius: 20px; margin-bottom: 16px;"></div>
+                <div class="skeleton-shimmer" style="width: 160px; height: 26px; border-radius: 6px; margin-bottom: 16px;"></div>
                 <div class="skeleton-shimmer" style="width: 220px; height: 38px; border-radius: 8px;"></div>
             </div>
 
@@ -809,15 +797,6 @@
 
                 <!-- Profile Name -->
                 <h2 class="user-name" id="user-display-name">مستخدم هيكاري</h2>
-
-                <!-- Profile Meta -->
-                <div class="user-meta">
-                    <span class="meta-pill">
-                        <span class="status-dot"></span>
-                        <span id="user-status-text">حساب نشط</span>
-                    </span>
-                    <span class="meta-pill" id="user-id-tag">المعرف: #409218</span>
-                </div>
 
                 <!-- Current Points Balance -->
                 <div class="balance-box">
@@ -1043,6 +1022,17 @@
             `;
         }
 
+        function formatAvatarSrc(raw) {
+            if (!raw || typeof raw !== 'string') return '';
+            const trimmed = raw.trim();
+            if (!trimmed) return '';
+            if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:image/')) {
+                return trimmed;
+            }
+            const clean = trimmed.includes(',') ? trimmed.split(',')[1] : trimmed;
+            return `data:image/jpeg;base64,${clean}`;
+        }
+
         function updateAvatarDisplay(avatarUrl, userName) {
             const container = document.getElementById('avatar-container');
             if (!container) return;
@@ -1053,9 +1043,11 @@
                 </div>
             `;
 
-            if (avatarUrl && typeof avatarUrl === 'string' && avatarUrl.trim().length > 0) {
+            const formattedSrc = formatAvatarSrc(avatarUrl);
+
+            if (formattedSrc) {
                 container.innerHTML = `
-                    <img class="avatar-img" src="${avatarUrl}" alt="${userName || 'مستخدم'}" onerror="this.onerror=null; this.outerHTML=getDefaultAvatarSvg();">
+                    <img class="avatar-img" src="${formattedSrc}" alt="${userName || 'مستخدم'}" onerror="this.onerror=null; this.outerHTML=getDefaultAvatarSvg();">
                     ${badgeHtml}
                 `;
             } else {
@@ -1069,9 +1061,6 @@
         function applyUserData(id, name, avatarUrl, points) {
             if (name) {
                 document.getElementById('user-display-name').textContent = name;
-            }
-            if (id) {
-                document.getElementById('user-id-tag').textContent = 'المعرف: #' + id;
             }
             if (points !== undefined && points !== null) {
                 const count = typeof points === 'number' ? points.toLocaleString('en-US') : points;
