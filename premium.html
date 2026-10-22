@@ -1159,6 +1159,8 @@
         });
 
         function selectPackageById(pkgId) {
+            showToast("سيتوفر الدفع قريبا...");
+            return;
             const pkg = packagesData.find(p => p.id === pkgId);
             if (!pkg) return;
 
