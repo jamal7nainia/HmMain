@@ -1088,9 +1088,19 @@
         // Fetch data from HikariMangaServer with Shimmer effect & HMAC security verification
         async function fetchStoreData() {
             const urlParams = new URLSearchParams(window.location.search);
-            const idParam = urlParams.get('id') || urlParams.get('user_id');
-            const timeParam = urlParams.get('t') || urlParams.get('timestamp');
-            const tokenParam = urlParams.get('token') || urlParams.get('key');
+            let idParam = urlParams.get('id') || urlParams.get('user_id');
+            let timeParam = urlParams.get('t') || urlParams.get('timestamp');
+            let tokenParam = urlParams.get('token') || urlParams.get('key');
+
+            // Fallback to sessionStorage if URL parameters were stripped or refreshed
+            if (!idParam || !timeParam || !tokenParam) {
+                try {
+                    const cached = JSON.parse(sessionStorage.getItem('hm_premium_auth') || '{}');
+                    idParam = idParam || cached.id;
+                    timeParam = timeParam || cached.t;
+                    tokenParam = tokenParam || cached.token;
+                } catch (_) {}
+            }
 
             // Security guard: If user ID, timestamp, or HMAC token are missing, redirect to index.html immediately
             if (!idParam || !timeParam || !tokenParam) {
@@ -1098,6 +1108,15 @@
                 redirectToHome();
                 return;
             }
+
+            // Cache verified credentials in sessionStorage for uninterrupted page refreshes
+            try {
+                sessionStorage.setItem('hm_premium_auth', JSON.stringify({
+                    id: idParam,
+                    t: timeParam,
+                    token: tokenParam
+                }));
+            } catch (_) {}
 
             // Start Shimmer effect while loading
             renderProductsShimmer();
@@ -1138,11 +1157,6 @@
 
                 // Reveal loaded content
                 finishLoading();
-
-                // Sanitize URL: Remove sensitive tokens/IDs from address bar and browser history
-                if (window.history && window.history.replaceState) {
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
 
             } catch (err) {
                 console.warn('[premium.html] Verification failed or network error:', err);
