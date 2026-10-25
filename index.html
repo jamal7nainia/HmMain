@@ -86,6 +86,25 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="js/nav.js" defer></script>
   <script src="js/hero.js" defer></script>
+  <style>
+    .btn-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: btn-spin 0.75s linear infinite;
+    }
+    @keyframes btn-spin {
+      to { transform: rotate(360deg); }
+    }
+    .btn.is-loading {
+      cursor: wait !important;
+      pointer-events: none;
+      opacity: 0.95;
+    }
+  </style>
 </head>
 <body>
 
@@ -496,12 +515,29 @@
 <script>
   (function () {
     'use strict';
+    var url = 'https://github.com/jamal7nainia/HikariManga-Releases/releases/download/hikarimangav1.4.2/HikariManga.v1.4.2-all.apk';
     var btn = document.getElementById('download-btn');
-    document.querySelector(".badge-new").style.display = "none";
+    var badge = document.querySelector(".badge-new");
+    if (badge) badge.style.display = "none";
     if (!btn) return;
+
     btn.addEventListener('click', function () {
-      var url = 'https://github.com/jamal7nainia/HikariManga-Releases/releases/download/hikarimangav1.4.2/HikariManga.v1.4.2-all.apk';
-      window.location.href = url;
+      if (btn.classList.contains('is-loading')) return;
+
+      var originalHtml = btn.innerHTML;
+      btn.style.minWidth = btn.offsetWidth + 'px';
+      btn.classList.add('is-loading');
+      btn.innerHTML = '<span class="btn-spinner" aria-hidden="true"></span>';
+
+      setTimeout(function () {
+        window.location.href = url;
+
+        setTimeout(function () {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove('is-loading');
+          btn.style.minWidth = '';
+        }, 1500);
+      }, 3000);
     });
   })();
 </script>

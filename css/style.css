@@ -321,6 +321,23 @@ img{display:block;}
   color:var(--text);
   border:1px solid var(--line);
 }
+.btn.is-loading{
+  cursor:wait !important;
+  pointer-events:none;
+  opacity:0.95;
+}
+.btn-spinner{
+  display:inline-block;
+  width:20px;
+  height:20px;
+  border:2.5px solid rgba(255,255,255,0.35);
+  border-radius:50%;
+  border-top-color:#ffffff;
+  animation:btn-spin 0.75s linear infinite;
+}
+@keyframes btn-spin{
+  to{transform:rotate(360deg);}
+}
 
 /* ============ FEATURES ============ */
 .section{padding:90px 0;}
