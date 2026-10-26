@@ -1,32 +1,5 @@
 (function () {
   'use strict';
-  const SET_WIDTH = 1760;
-
-  function animateRow(selector, speed, direction) {
-    const track = document.querySelector(selector);
-    if (!track) return;
-
-    let pos = direction === 1 ? -SET_WIDTH : 0;
-    let lastTime = performance.now();
-
-    function step(currentTime) {
-      const dt = Math.min((currentTime - lastTime) / 1000, 0.1); 
-      lastTime = currentTime;
-
-      pos += direction * speed * dt;
-
-      if (direction === -1 && pos <= -SET_WIDTH) {
-        pos += SET_WIDTH;
-      } else if (direction === 1 && pos >= 0) {
-        pos -= SET_WIDTH;
-      }
-
-      track.style.transform = `translate3d(${pos.toFixed(2)}px, 0, 0)`;
-      requestAnimationFrame(step);
-    }
-
-    requestAnimationFrame(step);
-  }
 
   async function initPostersIfEmpty() {
     const trackA = document.querySelector('.poster-track.track-a');
@@ -72,9 +45,22 @@
     }
   }
 
+  // إيقاف الأنيميشن عند خروج المستخدم من التاب لتوفير الموارد والبطارية،
+  // واستئنافه فوراً عند العودة — بدون أي تأثير على المظهر.
+  function setupVisibilityPause() {
+    var tracks = document.querySelectorAll('.poster-track');
+    if (!tracks.length) return;
+
+    document.addEventListener('visibilitychange', function () {
+      var state = document.hidden ? 'paused' : 'running';
+      tracks.forEach(function (t) {
+        t.style.animationPlayState = state;
+      });
+    });
+  }
+
   window.addEventListener('load', async () => {
     await initPostersIfEmpty();
-    animateRow('.poster-track.track-a', 45, -1);
-    animateRow('.poster-track.track-b', 35, 1);
+    setupVisibilityPause();
   });
 })();
