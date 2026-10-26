@@ -530,14 +530,21 @@
       btn.innerHTML = '<span class="btn-spinner" aria-hidden="true"></span>';
 
       setTimeout(function () {
-        window.location.href = url;
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', '');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
         setTimeout(function () {
           btn.innerHTML = originalHtml;
           btn.classList.remove('is-loading');
           btn.style.minWidth = '';
-        }, 1500);
-      }, 3000);
+        }, 1000);
+      }, 2000);
+
     });
   })();
 </script>
