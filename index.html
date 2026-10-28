@@ -617,26 +617,33 @@
 <script>
   (function () {
     'use strict';
-    var url = 'https://github.com/jamal7nainia/HikariManga-Releases/releases/download/HikariManga/HikariManga.v1.4.3.apk';
+    var apkUrl = 'https://github.com/jamal7nainia/HikariManga-Releases/releases/download/HikariManga/HikariManga.v1.4.3.apk';
+    var smartLinkUrl = 'https://asiafilm.org/4/6b253deb0778a64b3d9aa82ab6aa6789';
+
     var btn = document.getElementById('download-btn');
-    var badge = document.querySelector(".badge-new");
-    var sectionDownload = document.getElementById("download");
-    sectionDownload.style.display = "none";
-    badge.textContent = "v1.4.3";
-    //if (badge) badge.style.display = "none";
+    var badge = document.querySelector('.badge-new');
+    var sectionDownload = document.getElementById('download');
+
+    if (sectionDownload) sectionDownload.style.display = 'none';
+    if (badge) badge.textContent = 'v1.4.3';
     if (!btn) return;
 
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (event) {
       if (btn.classList.contains('is-loading')) return;
-
+      if (smartLinkUrl) {
+        var adAlreadyShown = sessionStorage.getItem('adsterra_clicked');
+        if (!adAlreadyShown) {
+          window.open(smartLinkUrl, '_blank', 'noopener,noreferrer');
+          sessionStorage.setItem('adsterra_clicked', 'true');
+        }
+      }
       var originalHtml = btn.innerHTML;
       btn.style.minWidth = btn.offsetWidth + 'px';
       btn.classList.add('is-loading');
       btn.innerHTML = '<span class="btn-spinner" aria-hidden="true"></span>';
-
       setTimeout(function () {
         var link = document.createElement('a');
-        link.href = url;
+        link.href = apkUrl;
         link.setAttribute('download', '');
         link.style.display = 'none';
         document.body.appendChild(link);
@@ -648,7 +655,7 @@
           btn.classList.remove('is-loading');
           btn.style.minWidth = '';
         }, 1000);
-      }, 2000);
+      }, 1500);
 
     });
   })();
