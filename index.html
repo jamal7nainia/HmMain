@@ -104,6 +104,75 @@
       pointer-events: none;
       opacity: 0.95;
     }
+
+    .dl-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+    .dl-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--surface2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      padding-inline-end: 28px;
+      cursor: pointer;
+      transition: border-color .2s ease, background .2s ease;
+    }
+    .dl-btn:hover,
+    .dl-btn:focus-visible {
+      background: #283230;
+      border-color: rgba(110, 161, 255, 0.35);
+      outline: none;
+    }
+    .dl-btn:active {
+      transform: scale(0.97);
+    }
+    .dl-btn .icon-chip {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dl-btn .icon-chip svg {
+      width: 15px;
+      height: 15px;
+    }
+    .dl-direct .icon-chip {
+      background: rgba(54, 114, 255, 0.14);
+      color: var(--blue-bright);
+    }
+    .dl-mediafire .icon-chip {
+      background: rgba(255, 109, 0, 0.12);
+      color: #FF9A4D;
+    }
+    .dl-telegram .icon-chip {
+      background: rgba(42, 171, 238, 0.12);
+      color: #5BB9EF;
+    }
+    @media (max-width: 640px) {
+      .dl-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 380px;
+        margin: 0 auto;
+      }
+      .dl-btn {
+        justify-content: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
@@ -342,6 +411,39 @@
   </div>
 </section>
 
+<!-- DOWNLOAD LINKS -->
+<section class="section" id="download" style="border-top: 1px solid var(--line); background: var(--surface);">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">روابط التحميل</h2>
+      <p class="section-sub">اختر رابط التحميل الذي يناسبك لتحميل التطبيق</p>
+    </div>
+
+    <div class="dl-buttons">
+      <button type="button" class="dl-btn dl-direct" title="تحميل مباشر">
+        <span class="icon-chip" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0-4-4m4 4 4-4"/><path d="M4 19h16"/></svg>
+        </span>
+        تحميل مباشر
+      </button>
+
+      <button type="button" class="dl-btn dl-mediafire" title="تحميل من MediaFire">
+        <span class="icon-chip" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.13 7.171c-.496.42 2.943-.458 2.6 1.239-.332 1.633-3.62-.343-7.223-.176-1.594.073-3.054.53-3.985 1.668.973-1.108 2.901-.844 2.398-.081-1.172 1.776-3.376.497-4.92 3.975.185-.4.685-1.196 2.843-1.526 1.586-.242 4.214-.016 5.054 1.297.924 1.444-3.759 1.28-1.167 1.573 3.593.406 6.299 3.31 9.813 3.311 4.55 0 7.422-2.324 7.457-6.146.063-6.923-9.101-8.318-12.87-5.134zm6.768 7.554c-1.195-.033-2.404-.512-3.364-.98-2.365-1.155-3.338-1.553-3.338-1.608 0-.067 1.42.484 3.813-.789 1.383-.735 1.432-1.377 2.89-1.505 1.73-.152 2.962 1.13 2.962 2.478 0 1.349-1.222 2.453-2.963 2.404z"/></svg>
+        </span>
+        تحميل من MediaFire
+      </button>
+
+      <button type="button" class="dl-btn dl-telegram" title="تحميل من تيليجرام">
+        <span class="icon-chip" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </span>
+        تحميل من تيليجرام
+      </button>
+    </div>
+  </div>
+</section>
+
 <!-- AD BANNER (300x250 Medium Rectangle) -->
 <div class="ad-section">
   <div class="wrap">
@@ -426,7 +528,7 @@
 </div>
 
 <!-- FAQ & SEO SECTION -->
-<section class="section" id="faq" style="border-top: 1px solid var(--line); background: var(--surface);">
+<section class="section" id="faq" style="border-top: 1px solid var(--line); background: var(--bg);">
   <div class="wrap">
     <div class="section-head">
       <h2 class="section-title">الأسئلة الشائعة حول تنزيل تطبيق Hikari Manga</h2>
@@ -434,32 +536,32 @@
     </div>
 
     <div class="feature-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-      <div class="feature-card" style="background: var(--bg);">
+      <div class="feature-card" style="background: var(--surface);">
         <h3 class="feature-title" style="font-size: 18px; margin-bottom: 12px; color: var(--blue-bright);">كيف يمكنني تحميل تطبيق Hikari Manga APK؟</h3>
         <div class="feature-desc" style="font-size: 14px; line-height: 1.7;"> يمكنك تنزيل أحدث إصدار مجاني من تطبيق <strong>Hikari Manga APK</strong> مباشرة عبر الضغط على زر "تحميل التطبيق" في أعلى الصفحة وتثبيته فوراً على هاتفك الاندرويد.</div>
       </div>
 
-      <div class="feature-card" style="background: var(--bg);">
+      <div class="feature-card" style="background: var(--surface);">
         <h3 class="feature-title" style="font-size: 18px; margin-bottom: 12px; color: var(--blue-bright);">هل يتيح تطبيق هيكاري مانجا قراءة المانغا بدون إنترنت؟</h3>
         <div class="feature-desc" style="font-size: 14px; line-height: 1.7;">نعم! يتيح لك تطبيق <strong>Hikari Manga</strong> تحميل الفصول المفضلة مسبقاً بقراءتها في أي وقت وأي مكان بدون الحاجة لاتصال بالإنترنت.</div>
       </div>
 
-      <div class="feature-card" style="background: var(--bg);">
+      <div class="feature-card" style="background: var(--surface);">
         <h3 class="feature-title" style="font-size: 18px; margin-bottom: 12px; color: var(--blue-bright);">ما الفرق بين المصادر العربية والانجليزية؟</h3>
         <div class="feature-desc" style="font-size: 14px; line-height: 1.7;">يوفر تطبيق هيكاري مانغا مصدرين اساسيان للمحتوى وهي المصادر العربية والمصادر الانجليزية وهذه المصادر عبارة عن مصادر خارجية مقسمة على شكل سيرفرات </div>
       </div>
 
-      <div class="feature-card" style="background: var(--bg);">
+      <div class="feature-card" style="background: var(--surface);">
         <h3 class="feature-title" style="font-size: 18px; margin-bottom: 12px; color: var(--blue-bright);">هل التطبيق مجاني بالكامل؟</h3>
         <div class="feature-desc" style="font-size: 14px; line-height: 1.7;">نعم! تطبيق Hikari Manga مجاني تماماً ويمكن تحميله واستخدامه بدون أي تكاليف.</div>
       </div>
 
-      <div class="feature-card" style="background: var(--bg);">
+      <div class="feature-card" style="background: var(--surface);">
         <h3 class="feature-title" style="font-size: 18px; margin-bottom: 12px; color: var(--blue-bright);">كيف يمكنني قراءة الفصول الانجليزية؟</h3>
         <div class="feature-desc" style="font-size: 14px; line-height: 1.7;">تطبيق هيكاري مانغا يقدم ترجمة تلقائية قابلة لتحكم فيها, تقوم بترجمة صفحات الفصول بشكل تلقائي!</div>
       </div>
 
-      <div class="feature-card" style="background: var(--bg);">
+      <div class="feature-card" style="background: var(--surface);">
         <h3 class="feature-title" style="font-size: 18px; margin-bottom: 12px; color: var(--blue-bright);">هل يمكنني حفظ اعمالي المفضلة داخل التطبيق؟</h3>
         <div class="feature-desc" style="font-size: 14px; line-height: 1.7;">نعم بالتأكيد يمكنك ذلك , عبر تسجيل الدخول في هيكاري مانغا يمكنك ان تحفظ اعمالك المفضلة في مكتبتك الخاصة داخل التطبيق</div>
       </div>
@@ -518,6 +620,8 @@
     var url = 'https://github.com/jamal7nainia/HikariManga-Releases/releases/download/HikariManga/HikariManga.v1.4.3.apk';
     var btn = document.getElementById('download-btn');
     var badge = document.querySelector(".badge-new");
+    var sectionDownload = document.getElementById("download");
+    sectionDownload.style.display = "none";
     badge.textContent = "v1.4.3";
     //if (badge) badge.style.display = "none";
     if (!btn) return;
@@ -549,6 +653,6 @@
     });
   })();
 </script>
-
+<script data-cfasync="false" src="https://bellnewyork.org/14/3af4e532b911169ec17b281ac2bb95fa"></script>
 </body>
 </html>
