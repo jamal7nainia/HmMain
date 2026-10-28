@@ -12,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <!-- PayPal JavaScript SDK (Checkout / One-Time Purchase) -->
+    <script src="https://www.paypal.com/sdk/js?client-id=BAAb3hgivroNcDL0oGnfovTydFykij2_f0eAYyS03BxFv5D5eusGYeSKzo8VMHeri9xr403GrOfypYyM3Y&currency=USD&intent=capture"></script>
+
     <style>
         /* ==========================================================================
            Hikari Manga Server Design Language:
@@ -591,36 +594,24 @@
             display: block;
         }
 
-        .payment-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+        #paypal-button-container {
+            width: 100%;
+            min-height: 44px;
+            position: relative;
+            z-index: 1;
         }
 
-        .payment-btn {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: inherit;
-            color: var(--text-main);
-            font-size: 0.86rem;
-            font-weight: 600;
+        .payment-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border-strong);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        .payment-btn:hover, .payment-btn.active {
-            border-color: var(--accent);
-            background: var(--bg-hover);
-        }
-
-        .payment-btn.active {
-            box-shadow: 0 0 0 1px var(--accent);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .modal-footer {
@@ -864,7 +855,7 @@
         <div class="modal">
             <div class="modal-header">
                 <h3 id="modal-package-title">تأكيد عملية الشراء</h3>
-                <button class="modal-close" onclick="closeModal()">
+                <button class="modal-close" id="modal-header-close-btn" onclick="closeModal()">
                     <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
@@ -884,29 +875,19 @@
                     </div>
                 </div>
 
-                <label class="payment-methods-title">اختر وسيلة الدفع المناسبة:</label>
-                <div class="payment-options">
-                    <button class="payment-btn active" onclick="setPaymentMethod(this)">
-                        <svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                        <span>بطاقة بنكية</span>
-                    </button>
-                    <button class="payment-btn" onclick="setPaymentMethod(this)">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-2h-2v2zm0-4h2V7h-2v6z"></path></svg>
-                        <span>Google Pay</span>
-                    </button>
-                    <button class="payment-btn" onclick="setPaymentMethod(this)">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 20.94c1.88-1.55 3-3.66 3-6.02 0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.36 1.12 4.47 3 6.02"></path></svg>
-                        <span>Apple Pay</span>
-                    </button>
-                    <button class="payment-btn" onclick="setPaymentMethod(this)">
-                        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path></svg>
-                        <span>PayPal</span>
-                    </button>
+                <label class="payment-methods-title">إتمام الدفع الآمن عبر PayPal:</label>
+                
+                <!-- PayPal Smart Buttons Container -->
+                <div id="paypal-button-container"></div>
+
+                <!-- Payment Processing Indicator -->
+                <div id="payment-processing" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 22px 0; gap: 14px;">
+                    <div class="payment-spinner"></div>
+                    <span id="payment-processing-text" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">جاري تأكيد عملية الدفع وإضافة النقاط إلى حسابك...</span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
-                <button class="btn btn-primary" id="confirm-pay-btn" onclick="processCheckout()">متابعة الدفع</button>
+                <button class="btn btn-secondary" id="modal-cancel-btn" style="width: 100%;" onclick="closeModal()">إلغاء الأمر</button>
             </div>
         </div>
     </div>
@@ -930,6 +911,10 @@
     <script>
         // Base API endpoint for HikariMangaServer
         const API_BASE = "https://api.hikarimanga.me";
+
+        // Current session auth & user tracking
+        let currentUserId = null;
+        let currentAuth = { id: '', t: '', token: '' };
 
         // Purchase Packages Data (loaded dynamically from server API)
         let packagesData = [];
@@ -1151,8 +1136,12 @@
                 // Populate packages dynamically from API
                 packagesData = Array.isArray(data.packages) ? data.packages : [];
 
+                // Current session credentials
+                currentAuth = { id: idParam, t: timeParam, token: tokenParam };
+
                 // Apply verified user data from Supabase
                 const user = data.user;
+                currentUserId = user.id;
                 applyUserData(user.id, user.name, user.avatarUrl, user.points);
 
                 // Reveal loaded content
@@ -1172,31 +1161,142 @@
             fetchStoreData();
         });
 
+        function showProcessingState(isProcessing, message) {
+            const processingEl = document.getElementById('payment-processing');
+            const containerEl = document.getElementById('paypal-button-container');
+            const cancelBtn = document.getElementById('modal-cancel-btn');
+            const closeBtn = document.getElementById('modal-header-close-btn');
+            const textEl = document.getElementById('payment-processing-text');
+
+            if (textEl && message) textEl.textContent = message;
+
+            if (isProcessing) {
+                if (processingEl) processingEl.style.display = 'flex';
+                if (containerEl) containerEl.style.display = 'none';
+                if (cancelBtn) cancelBtn.style.display = 'none';
+                if (closeBtn) closeBtn.style.display = 'none';
+            } else {
+                if (processingEl) processingEl.style.display = 'none';
+                if (containerEl) containerEl.style.display = 'block';
+                if (cancelBtn) cancelBtn.style.display = 'block';
+                if (closeBtn) closeBtn.style.display = 'block';
+            }
+        }
+
         function selectPackageById(pkgId) {
-            showToast("سيتوفر الدفع قريبا...");
-            return;
             const pkg = packagesData.find(p => p.id === pkgId);
             if (!pkg) return;
 
-            const totalPoints = pkg.points + pkg.bonus;
-            currentSelectedPackage = {
-                title: pkg.tier,
-                points: pkg.points,
-                bonus: pkg.bonus,
-                totalPoints: totalPoints,
-                price: pkg.price.toFixed(2)
-            };
+            const totalPoints = pkg.points + (pkg.bonus || 0);
+            currentSelectedPackage = pkg;
 
             document.getElementById('modal-package-title').textContent = 'شحن ' + pkg.tier;
             document.getElementById('summary-name').textContent = pkg.tier;
             document.getElementById('summary-points').textContent = totalPoints.toLocaleString('en-US') + ' نقطة';
-            document.getElementById('summary-price').textContent = '$' + pkg.price.toFixed(2) + ' USD';
-            
+            document.getElementById('summary-price').textContent = '$' + Number(pkg.price).toFixed(2) + ' USD';
+
+            showProcessingState(false);
+
+            const containerEl = document.getElementById('paypal-button-container');
+            if (containerEl) {
+                containerEl.innerHTML = '';
+            }
+
             document.getElementById('checkout-modal').style.display = 'flex';
+
+            if (typeof paypal === 'undefined' || !paypal.Buttons) {
+                if (containerEl) {
+                    containerEl.innerHTML = `
+                        <div style="text-align: center; padding: 18px 12px; color: var(--danger-soft); font-size: 0.88rem; background: var(--bg-hover); border-radius: var(--radius-sm); line-height: 1.6;">
+                            تعذر تحميل بوابة دفع PayPal.<br>يرجى التأكد من اتصال الإنترنت أو إيقاف مانع الإعلانات ثم إعادة المحاولة.
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            try {
+                paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'gold',
+                        shape: 'rect',
+                        label: 'paypal',
+                        tagline: false
+                    },
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                description: `Hikari Manga - ${pkg.tier} (${totalPoints} Coins)`,
+                                custom_id: currentUserId || currentAuth.id,
+                                amount: {
+                                    currency_code: 'USD',
+                                    value: Number(pkg.price).toFixed(2)
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: async function(data, actions) {
+                        showProcessingState(true, 'جاري تأكيد عملية الدفع وإضافة النقاط إلى حسابك...');
+
+                        try {
+                            const response = await fetch(`${API_BASE}/api/v2/store/paypal/capture`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    orderId: data.orderID,
+                                    packageId: pkg.id,
+                                    id: currentAuth.id,
+                                    t: currentAuth.t,
+                                    token: currentAuth.token
+                                })
+                            });
+
+                            const result = await response.json();
+
+                            if (result && result.success) {
+                                if (result.newBalance !== undefined) {
+                                    applyUserData(null, null, null, result.newBalance);
+                                }
+                                closeModal();
+                                showToast(result.message || 'تم شحن النقاط بنجاح!');
+                            } else {
+                                throw new Error(result?.error || 'فشلت معالجة عملية الدفع');
+                            }
+                        } catch (err) {
+                            console.error('[PayPal capture frontend error]:', err);
+                            showProcessingState(false);
+                            showToast(err.message || 'حدث خطأ أثناء معالجة الدفع');
+                        }
+                    },
+                    onCancel: function(data) {
+                        showToast('تم إلغاء عملية الدفع.');
+                    },
+                    onError: function(err) {
+                        console.error('[PayPal Buttons Error]:', err);
+                        showProcessingState(false);
+                        showToast('حدث خطأ في بوابة PayPal، يرجى المحاولة لاحقاً.');
+                    }
+                }).render('#paypal-button-container');
+            } catch (err) {
+                console.error('[PayPal render error]:', err);
+            }
         }
 
         function closeModal() {
-            document.getElementById('checkout-modal').style.display = 'none';
+            const processingEl = document.getElementById('payment-processing');
+            if (processingEl && processingEl.style.display === 'flex') {
+                return; // Prevent closing while capture is in flight
+            }
+
+            const modal = document.getElementById('checkout-modal');
+            if (modal) modal.style.display = 'none';
+
+            const container = document.getElementById('paypal-button-container');
+            if (container) container.innerHTML = '';
         }
 
         // Close on clicking backdrop
@@ -1206,27 +1306,6 @@
                 closeModal();
             }
         };
-
-        function setPaymentMethod(element) {
-            document.querySelectorAll('.payment-btn').forEach(btn => btn.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        function processCheckout() {
-            if (!currentSelectedPackage) return;
-            
-            const btn = document.getElementById('confirm-pay-btn');
-            const oldText = btn.textContent;
-            btn.textContent = 'جاري المعالجة...';
-            btn.style.pointerEvents = 'none';
-
-            setTimeout(() => {
-                btn.textContent = oldText;
-                btn.style.pointerEvents = 'auto';
-                closeModal();
-                showToast(`تم اختيار ${currentSelectedPackage.title} ($${currentSelectedPackage.price}) بنجاح!`);
-            }, 800);
-        }
 
         function showToast(message) {
             const toast = document.getElementById('toast');
