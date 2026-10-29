@@ -630,14 +630,13 @@
 
     btn.addEventListener('click', function (event) {
       if (btn.classList.contains('is-loading')) return;
-      /*if (smartLinkUrl) {
+      if (smartLinkUrl) {
         var adAlreadyShown = sessionStorage.getItem('adsterra_clicked');
         if (!adAlreadyShown) {
           window.open(smartLinkUrl, '_blank', 'noopener,noreferrer');
           sessionStorage.setItem('adsterra_clicked', 'true');
         }
       }
-      */
       var originalHtml = btn.innerHTML;
       btn.style.minWidth = btn.offsetWidth + 'px';
       btn.classList.add('is-loading');
