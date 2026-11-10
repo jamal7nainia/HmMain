@@ -1143,7 +1143,7 @@
 
             // Security guard: If user ID, timestamp, or HMAC token are missing, redirect to index.html immediately
             if (!idParam || !timeParam || !tokenParam) {
-                console.warn('[premium.html] Missing security credentials, redirecting to index.html');
+                console.warn('[store.html] Missing security credentials, redirecting to index.html');
                 redirectToHome();
                 return;
             }
@@ -1173,7 +1173,7 @@
 
                 // If server responded with error code (401 Unauthorized, 403 Forbidden, 404, etc.)
                 if (!res.ok) {
-                    console.warn('[premium.html] Server error status (' + res.status + '), redirecting to index.html');
+                    console.warn('[store.html] Server error status (' + res.status + '), redirecting to index.html');
                     redirectToHome();
                     return;
                 }
@@ -1182,7 +1182,7 @@
 
                 // If response indicated failure or missing user data
                 if (!data || !data.success || !data.user) {
-                    console.warn('[premium.html] Server rejected verification:', data);
+                    console.warn('[store.html] Server rejected verification:', data);
                     redirectToHome();
                     return;
                 }
@@ -1202,7 +1202,7 @@
                 finishLoading();
 
             } catch (err) {
-                console.warn('[premium.html] Verification failed or network error:', err);
+                console.warn('[store.html] Verification failed or network error:', err);
                 redirectToHome();
             }
         }
