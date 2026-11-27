@@ -620,7 +620,7 @@
     'use strict';
     var apkUrl = 'https://github.com/jamal7nainia/HikariManga-Releases/releases/download/hikarimanga-v1.4.6/HikariManga-v1.4.6.apk';
     var smartLinkUrl = 'https://ardance.org/4/8380bbdefd7a0bd80c774a6c67cc5680';
-
+    var isSmartLinkActive = false;
     var btn = document.getElementById('download-btn');
     var badge = document.querySelector('.badge-new');
     var sectionDownload = document.getElementById('download');
@@ -631,11 +631,11 @@
 
     btn.addEventListener('click', function (event) {
       if (btn.classList.contains('is-loading')) return;
-      if (smartLinkUrl) {
+      if (smartLinkUrl && isSmartLinkActive) {
         var adAlreadyShown = sessionStorage.getItem('adsterra_clicked');
         if (!adAlreadyShown) {
-          window.open(smartLinkUrl, '_blank', 'noopener,noreferrer');
-          sessionStorage.setItem('adsterra_clicked', 'true');
+            window.open(smartLinkUrl, '_blank', 'noopener,noreferrer');
+            sessionStorage.setItem('adsterra_clicked', 'true');
         }
       }
       var originalHtml = btn.innerHTML;
